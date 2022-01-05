@@ -8,3 +8,5 @@ Requirements:
 - Store token in token.json
 
 More details will be available later
+
+Current functionality for Winter 2022 only.
