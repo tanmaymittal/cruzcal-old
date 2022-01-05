@@ -57,7 +57,7 @@ def main():
     more = True
     while more:
         # print('Do you want to add a class?')
-        x = input('Do you want to add a class: Yes or No')
+        x = input('Do you want to add a class: Yes or No: ')
         if x.lower() != 'yes':
             more = False
             break
