@@ -124,7 +124,7 @@ def pisa(class_number):
         'binds[:days]': '', 
         'binds[:times]': '', 
         'binds[:acad_career]': '', 
-        'binds[:session_code]': '', 
+        'binds[:session_code]': '',     
         'rec_start': '0' , # dont know 
         'rec_dur': '25' # dont know 
     }
