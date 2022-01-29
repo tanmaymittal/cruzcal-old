@@ -1,6 +1,7 @@
 import requests
 from requests.api import head 
 from icalendar import Calendar, Event
+from datetime import * 
 
 class Event():
     headers = {
