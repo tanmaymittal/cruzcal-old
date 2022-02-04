@@ -1,6 +1,7 @@
 import requests
 from requests.api import head 
-from icalendar import Calendar, Event
+from icalendar import Calendar
+from icalendar import Event as EV
 from datetime import * 
 from bs4 import BeautifulSoup as bs
 
@@ -63,7 +64,9 @@ class Event():
             'rec_start': '0' , # dont know 
             'rec_dur': '25' # dont know 
         }
+        self.events = []
         self.getClassData()
+
     def getClassData(self):
         """
         Grabs course data based on course number and saves them to their respective attributes.
@@ -111,6 +114,19 @@ class Event():
                 self.meetingRecurrences = count * 10
                 return True
         return False
-    def getiCal(self):
-        
-        pass
+    def printiCal(self):
+        cal = Calendar()
+        self.generateEvent()
+        # not done
+
+    def generateEvent(self):
+        event = EV()
+        start, end = self.meetingTime
+        event.add('summary', "{}".format(self.courseName))
+        event.add('description', 'Lecture for {}'.format(self.courseName))
+        event.add('dtstart', start)
+        event.add('dtend', end)
+        event.add('dtstamp', datetime.now())
+        event.add('location', self.meetingLocation)
+        event.add('rrule', { 'FREQ': 'WEEKLY', 'BYDAY':self.meetingDates, 'COUNT': self.meetingRecurrences})
+        return event
