@@ -2,6 +2,7 @@ import requests
 from requests.api import head 
 from icalendar import Calendar, Event
 from datetime import * 
+from bs4 import BeautifulSoup as bs
 
 class Event():
     headers = {
