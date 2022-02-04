@@ -28,15 +28,15 @@ def piso():
     return render_template('index.html', className = className, meetingPlace = meetingPlace,
     startDate=startDate, startTime=startTime, meetingDays=meetingDays, gotData=gotData)
 
-@app.route('/login/', methods=[ 'GET', 'POST'])
-def login():
-    error = request.args.get('error')
-    message = request.args.get ('message')
-    try:
-        if request.method =="POST":
-            email = request.form['email']
-            password = request.form['password']
-            lang = request.form[' language']
-            # C, conn = connection()
-    except:
-        pass
+# @app.route('/login/', methods=[ 'GET', 'POST'])
+# def login():
+#     error = request.args.get('error')
+#     message = request.args.get ('message')
+#     try:
+#         if request.method =="POST":
+#             email = request.form['email']
+#             password = request.form['password']
+#             lang = request.form[' language']
+#             # C, conn = connection()
+#     except:
+#         pass
