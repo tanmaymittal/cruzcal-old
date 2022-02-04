@@ -11,12 +11,19 @@
         <div class="main-box app">
             <h1>PISA</h1>
             <div class="app-wrapper">
-                <div class="input-box">
-                    Class Number: 
-                    <input type="number" name="currency-amount-1" value="1">
-                    <button id="fetch-button">Fetch Information</button>
-                </div>
+                <form method="post">
+                    <div class="input-box">
+                        <label>Class Number:</label>
+                        <input name="class_number" id = "class_number">
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-primary" type="submit"> Fetch Information </button>
+                        </div>
+                    </div>
+                </form>
             </div>
+            {% if gotData == true %}
+                <h2>{{  className }}</h2>
+            {% endif %}
         </div>
     </body>
 </html>
