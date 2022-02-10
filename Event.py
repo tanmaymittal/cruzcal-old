@@ -1,11 +1,16 @@
 import requests
 from requests.api import head 
-from icalendar import Calendar
 from icalendar import Event as EV
 from datetime import * 
 from bs4 import BeautifulSoup as bs
+from calendar import monthrange
 
 class Event():
+    """
+    Event class is responsible for grabbing, parsing, and saving relavent information
+    relavent to the class given its course number. The event class is also responsible
+    for generating iCalendar format events.
+    """
     headers = {
         'GET' : 'https://pisa.ucsc.edu/class_search/ HTTP/1.1', 
         'Host': 'pisa.ucsc.edu', 
@@ -27,10 +32,24 @@ class Event():
         'M': 'MO',
         'MW': 'MO,WE'
         }
+    num_day = {
+        0: 'MO',
+        1: 'TU',
+        2: 'WE',
+        3: 'TH',
+        4: 'FR',
+        5: None,
+        6: None
+        }
+    anchor = {
+        0: 2,
+        1: 0,
+        2: 5,
+        3: 3
+    }
     def __init__(self, courseNumber):
         """
         Intializes event object attributes and calls self.getClassData()
-        Returns None
         """
         self.courseNumber = courseNumber
         self.courseName = None
@@ -74,13 +93,12 @@ class Event():
         """
         search_url = "https://pisa.ucsc.edu/class_search/index.php"
         class_response = requests.post(search_url, headers=self.headers, verify=False, data=self.class_payload)
-        # print(class_response.text)
         raw_HTML = bs(class_response.content, 'lxml')
         # Saving Course Name
-        self.courseName = raw_HTML.find('h2').text
-        # name_class.text
+        self.courseName = ' '.join(raw_HTML.find('h2').text.split())
         courseInfo = raw_HTML.find_all('table')
         for child in courseInfo: 
+            #parsing course information
             children = child.findAll("tr" , recursive=False)
             if len(children) == 2: 
                 tableRow = children[1].find_all("td")
@@ -89,20 +107,14 @@ class Event():
                 meetingPlace = tableRow[1]
                 instructor = tableRow[2]
                 meetingDates = tableRow[3]
-                # print(name_class.text)
                 meetingTimesList = meetingTimes.text.split()
-                # 
                 daysToMeet = meetingTimesList[0]
                 timeToMeet = meetingTimesList[1].split('-')
-                
                 datesToMeet = meetingDates.text.split('-')
-                #
                 in_time = datetime.strptime(timeToMeet[0], "%I:%M%p")
                 startTime = datetime.strftime(in_time, "%H:%M")
-
                 end_time = datetime.strptime(timeToMeet[1], "%I:%M%p")
                 endTime = datetime.strftime(end_time, "%H:%M")
-
                 in_date = datetime.strptime(datesToMeet[0], "%m/%d/%y ")
                 in_date_formatted = datetime.strftime(in_date, "%Y-%m-%d")
                 count = len(self.days[daysToMeet].split(','))
@@ -110,23 +122,46 @@ class Event():
                 self.meetingLocation = meetingPlace.text
                 self.startDate = in_date_formatted
                 self.meetingTime = (startTime, endTime)
-                self.meetingDates = self.days[datesToMeet]
-                self.meetingRecurrences = count * 10
+                self.meetingDates = self.days[daysToMeet]
                 return True
         return False
-    def printiCal(self):
-        cal = Calendar()
-        self.generateEvent()
-        # not done
+    def getEvents(self):
+        return self.events
 
     def generateEvent(self):
-        event = EV()
-        start, end = self.meetingTime
-        event.add('summary', "{}".format(self.courseName))
-        event.add('description', 'Lecture for {}'.format(self.courseName))
-        event.add('dtstart', start)
-        event.add('dtend', end)
-        event.add('dtstamp', datetime.now())
-        event.add('location', self.meetingLocation)
-        event.add('rrule', { 'FREQ': 'WEEKLY', 'BYDAY':self.meetingDates, 'COUNT': self.meetingRecurrences})
-        return event
+        """
+        This method is responsible for generating iCalendar events for the
+        meeting information associated with the given course number.
+        """
+        
+        for day in self.meetingDates.split(','):
+            # Determine first meeting date given the day of week
+            curr_year, curr_month, curr_day = self.startDate.split('-')
+            curr_year, curr_month, curr_day = int(curr_year), int(curr_month), int(curr_day)
+            search_day, month_days = monthrange(curr_year, curr_month) # Get first day of mo and len(mo)
+            search_day = (search_day + curr_day - 1) % 7 # Grabs day of week for first day of class
+            while day != Event.num_day[search_day]:
+                curr_day += 1
+                search_day += 1
+                if curr_day > month_days:
+                    # Move to next valid day
+                    curr_day = 1
+                    curr_month += 1
+                    if curr_month > 12:
+                        curr_month = 1
+                        curr_year += 1
+                    search_day, month_days = monthrange(curr_year, curr_month)
+            # Creating the event for specified day of week
+            event = EV()
+            start, end = self.meetingTime
+            # Adding corrected start date to start and end times
+            start += ' {}-{}-{}'.format(curr_year, curr_month, curr_day)
+            end += ' {}-{}-{}'.format(curr_year, curr_month, curr_day)
+            event.add('summary', "{} - {}".format(day, self.courseName))
+            event.add('description', 'Lecture for {}'.format(self.courseName))
+            event.add('dtstart', datetime.strptime(start, '%H:%M %Y-%m-%d'))
+            event.add('dtend', datetime.strptime(end, '%H:%M %Y-%m-%d'))
+            event.add('dtstamp', datetime.now())
+            event.add('location', self.meetingLocation)
+            event.add('rrule', { 'FREQ': 'WEEKLY', 'BYDAY':day, 'COUNT': 10})
+            self.events.append(event)
