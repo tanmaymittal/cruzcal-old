@@ -109,9 +109,9 @@ def pisa(class_number):
     }
     class_payload = {
         'action': 'detail', 
-        'class_data[:STRM]': '2220',
+        'class_data[:STRM]': '2222',
         'class_data[:CLASS_NBR]': f'{class_number}', # class number 
-        'binds[:term]': '2220', # probably term number 
+        'binds[:term]': '2222', # probably term number 
         'binds[:reg_status]': 'all',
         'binds[:subject]': '', 
         'binds[:catalog_nbr_op]': '=', 
@@ -139,7 +139,8 @@ def pisa(class_number):
         'TuTh' : 'TU,TH',
         'MWF' : 'MO,WE,FR',
         'M': 'MO',
-        'MW': 'MO,WE'
+        'MW': 'MO,WE',
+        'Tu': 'TU'
         }
     # fulldays = {
     #     'Tu' : 'TU', 
@@ -184,7 +185,7 @@ def pisa(class_number):
             # print(timeToMeet)
             # exit()
             count = len(days[daysToMeet].split(','))
-            return name_class.text, meetingPlace.text, in_date_formatted, startTime, endTime, days[daysToMeet], count*10
+            return name_class.text, meetingPlace.text, in_date_formatted, startTime, endTime, days[daysToMeet], count*10, class_number
 
 if __name__ == '__main__':
     main()

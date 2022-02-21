@@ -14,21 +14,55 @@
                     <div class="input-box">
                         <label>Class Number:</label>
                         <input name="class_number" id = "class_number">
-                        <div class="form-group mb-0 text-center">
-                            <button class="btn btn-primary" type="submit"> Fetch Information </button>
-                        </div>
                     </div>
+                    <div class="input-box">
+                        <label>Class Number:</label>
+                        <input name="class_number_two" id >
+                    </div>
+                    <div class="input-box">
+                        <label>Class Number:</label>
+                        <input name="class_number_three" >
+                    </div>
+                    <div class="input-box">
+                        <label>Class Number:</label>
+                        <input name="class_number_four" >
+                    </div>
+                    <div class="input-box">
+                        <label>Class Number:</label>
+                        <input name="class_number_five" >
+                    </div>
+                    <div class="form-group mb-0 text-center">
+                        <button class="btn btn-primary" type="submit"> Fetch Information </button>
+                    </div>
+                    {% if gotData == True %}
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-primary"> <a href="{{url_for('download')}}" >Download</a></button>
+                        </div>
+                    {% endif %}
                 </form>
             </div>
             {% if gotData == True %}
-                <h2>{{  className }}</h2>
+                <!-- <h2>{{  className }}</h2>
                 <div class="">
                     <ul>
                         <li>{{ meetingPlace }}</li>
                         <li>{{ startDate }}</li>
                         <li>{{ meetingDays }}</li>
                     </ul>
+                </div> -->
+                <div>
+                    
                 </div>
+                
+                <table>
+                    {% for x in class_carry %}
+                        <tr>
+                            <th>{{ x.className }}</th>
+                            <th>{{ x.startDate }}</th>
+                            <th>{{ x.meetingDays }}</th>
+                        </tr>
+                    {% endfor %}
+                </table>
             {% endif %}
         </div>
     </body>

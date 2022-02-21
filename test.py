@@ -3,9 +3,9 @@ from pathlib import Path
 
 ical = iCalendar()
 while True:
-    a = input("Please enter course number to continue, e to export, or q to quit [q]")
+    a = input("Please enter course number to continue, e to export, or q to quit [q]\t")
     if a == 'e':
-        file_path = input("Please enter export path for 'calendar.ICS', or q to exit [~/]")
+        file_path = input("Please enter export path for 'calendar.ICS', or q to exit [~/]\t")
         if (''.join(file_path.split()) == '') :
             file_path = str(Path.home() / "Downloads")
         ical.export(file_path)

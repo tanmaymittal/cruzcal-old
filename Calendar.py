@@ -30,7 +30,8 @@ class iCalendar():
             return False
         for event in self.events:
             # package the events
-            cal.add_component(event)
+            if event != 0:
+                cal.add_component(event)
         f = open(filepath + '/calendar.ics', 'wb')
         f.write(cal.to_ical())
         f.close()

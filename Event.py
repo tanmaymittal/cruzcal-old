@@ -30,7 +30,8 @@ class Event():
         'TuTh' : 'TU,TH',
         'MWF' : 'MO,WE,FR',
         'M': 'MO',
-        'MW': 'MO,WE'
+        'MW': 'MO,WE',
+        'Tu': 'TU'
         }
     num_day = {
         0: 'MO',
@@ -61,9 +62,9 @@ class Event():
         self.instructor = None
         self.class_payload = {
             'action': 'detail', 
-            'class_data[:STRM]': '2220',
+            'class_data[:STRM]': '2222',
             'class_data[:CLASS_NBR]': f'{self.courseNumber}', # class number 
-            'binds[:term]': '2220', # probably term number 
+            'binds[:term]': '2222', # probably term number 
             'binds[:reg_status]': 'all',
             'binds[:subject]': '', 
             'binds[:catalog_nbr_op]': '=', 
@@ -102,6 +103,7 @@ class Event():
             children = child.findAll("tr" , recursive=False)
             if len(children) == 2: 
                 tableRow = children[1].find_all("td")
+                print(tableRow)
                 #tableRow structure: 4x4
                 meetingTimes = tableRow[0]
                 meetingPlace = tableRow[1]
@@ -123,6 +125,7 @@ class Event():
                 self.startDate = in_date_formatted
                 self.meetingTime = (startTime, endTime)
                 self.meetingDates = self.days[daysToMeet]
+                print(self.meetingDates)
                 return True
         return False
     def getEvents(self):
@@ -133,35 +136,37 @@ class Event():
         This method is responsible for generating iCalendar events for the
         meeting information associated with the given course number.
         """
-        
-        for day in self.meetingDates.split(','):
-            # Determine first meeting date given the day of week
-            curr_year, curr_month, curr_day = self.startDate.split('-')
-            curr_year, curr_month, curr_day = int(curr_year), int(curr_month), int(curr_day)
-            search_day, month_days = monthrange(curr_year, curr_month) # Get first day of mo and len(mo)
-            search_day = (search_day + curr_day - 1) % 7 # Grabs day of week for first day of class
-            while day != Event.num_day[search_day]:
-                curr_day += 1
-                search_day += 1
-                if curr_day > month_days:
-                    # Move to next valid day
-                    curr_day = 1
-                    curr_month += 1
-                    if curr_month > 12:
-                        curr_month = 1
-                        curr_year += 1
-                    search_day, month_days = monthrange(curr_year, curr_month)
-            # Creating the event for specified day of week
-            event = EV()
-            start, end = self.meetingTime
-            # Adding corrected start date to start and end times
-            start += ' {}-{}-{}'.format(curr_year, curr_month, curr_day)
-            end += ' {}-{}-{}'.format(curr_year, curr_month, curr_day)
-            event.add('summary', "{} - {}".format(day, self.courseName))
-            event.add('description', 'Lecture for {}'.format(self.courseName))
-            event.add('dtstart', datetime.strptime(start, '%H:%M %Y-%m-%d'))
-            event.add('dtend', datetime.strptime(end, '%H:%M %Y-%m-%d'))
-            event.add('dtstamp', datetime.now())
-            event.add('location', self.meetingLocation)
-            event.add('rrule', { 'FREQ': 'WEEKLY', 'BYDAY':day, 'COUNT': 10})
-            self.events.append(event)
+        if self.meetingDates is not None:
+            for day in self.meetingDates.split(','):
+                # Determine first meeting date given the day of week
+                curr_year, curr_month, curr_day = self.startDate.split('-')
+                curr_year, curr_month, curr_day = int(curr_year), int(curr_month), int(curr_day)
+                search_day, month_days = monthrange(curr_year, curr_month) # Get first day of mo and len(mo)
+                search_day = (search_day + curr_day - 1) % 7 # Grabs day of week for first day of class
+                while day != Event.num_day[search_day]:
+                    curr_day += 1
+                    search_day += 1
+                    if curr_day > month_days:
+                        # Move to next valid day
+                        curr_day = 1
+                        curr_month += 1
+                        if curr_month > 12:
+                            curr_month = 1
+                            curr_year += 1
+                        search_day, month_days = monthrange(curr_year, curr_month)
+                # Creating the event for specified day of week
+                event = EV()
+                start, end = self.meetingTime
+                # Adding corrected start date to start and end times
+                start += ' {}-{}-{}'.format(curr_year, curr_month, curr_day)
+                end += ' {}-{}-{}'.format(curr_year, curr_month, curr_day)
+                event.add('summary', "{} - {}".format(day, self.courseName))
+                event.add('description', 'Lecture for {}'.format(self.courseName))
+                event.add('dtstart', datetime.strptime(start, '%H:%M %Y-%m-%d'))
+                event.add('dtend', datetime.strptime(end, '%H:%M %Y-%m-%d'))
+                event.add('dtstamp', datetime.now())
+                event.add('location', self.meetingLocation)
+                event.add('rrule', { 'FREQ': 'WEEKLY', 'BYDAY':day, 'COUNT': 10})
+                self.events.append(event)
+        else: 
+            self.events.append(0)
