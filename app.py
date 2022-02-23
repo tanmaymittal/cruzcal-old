@@ -5,7 +5,7 @@ from Calendar import iCalendar
 import time
 
 
-ical = None
+ical = iCalendar()
 # Flask constructor
 app = Flask(__name__) 
 
