@@ -5,7 +5,7 @@ from Calendar import iCalendar
 import time
 
 
-ical = iCalendar()
+ical = None
 # Flask constructor
 app = Flask(__name__) 
 
@@ -19,6 +19,7 @@ def piso():
     # try:
     cal = False
     if request.method == "POST":
+        ical = iCalendar()
         class_number = request.form['class_number']
         class_number_two = request.form['class_number_two']
         class_number_three = request.form['class_number_three']
