@@ -1,16 +1,19 @@
 from icalendar import Calendar
 from Event import Event
+from pathlib import Path
+import gc
 
 
 class iCalendar():
     """
     Class responsible for creating calendar and exporting ICS file
     """
-    def __init__(self):
+    def __init__(self, uid = None):
         """
         Intializes event object attributes
         """
         self.events = []
+        self.uid = uid
 
     def addCourse(self, courseNumber):
         """
@@ -21,7 +24,19 @@ class iCalendar():
         self.events += ev.getEvents()
         return True
 
-    def export(self, filepath):
+    def clear(self, uid):
+        """
+        Clears calendar data and runs garbage collection
+        """
+        self.events = []
+        self.uid = uid
+        gc.collect()
+        return True
+
+    def gc(self, uid_to_be_deleted):
+        pass
+
+    def export(self):
         """
         Export calendar in ICS format
         """
@@ -32,7 +47,7 @@ class iCalendar():
             # package the events
             if event != 0:
                 cal.add_component(event)
-        f = open(filepath + '/calendar.ics', 'wb')
+        f = open('{}/{}.ics'.format(Path.cwd(), self.uid), 'wb')
         f.write(cal.to_ical())
         f.close()
         return True
