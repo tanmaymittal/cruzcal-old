@@ -6,6 +6,7 @@ from settings import *
 from random import randint
 import gc
 import datetime
+from Util import *
 
 ical = iCalendar()
 app = Flask(__name__) 
@@ -19,7 +20,7 @@ def garbageCollection():
     c.close()
     conn.close() 
     deletion_queue = [row[0] for row in dataset]
-    ical.gc(deletion_queue)
+    clear_files(deletion_queue)
     # handles removal of records from database
     sqlarg = 'DELETE FROM session WHERE '
     for i in range(len(dataset)):

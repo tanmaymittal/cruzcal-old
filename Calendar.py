@@ -2,6 +2,7 @@ from icalendar import Calendar
 from Event import Event
 from pathlib import Path
 import gc
+import os
 
 
 class iCalendar():
@@ -32,9 +33,6 @@ class iCalendar():
         self.uid = uid
         gc.collect()
         return True
-
-    def gc(self, uid_to_be_deleted):
-        pass
 
     def export(self):
         """
