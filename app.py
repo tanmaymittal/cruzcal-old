@@ -9,6 +9,8 @@ import datetime
 from Util import *
 
 app = Flask(__name__) 
+# app.debug = True
+app.config['DEBUG'] = True
 
 last_gc = datetime.datetime.min
 ical = iCalendar()
@@ -16,14 +18,14 @@ ical = iCalendar()
 def garbageCollection():
     # run garbage collection
     c, conn = connection()
-    c.execute("SELECT uid FROM session WHERE ftime < NOW() - INTERVAL 30 DAY")
+    c.execute("SELECT uid FROM sessions WHERE ftime < NOW() - INTERVAL 30 DAY")
     dataset = [row for row in c]
     c.close()
     conn.close() 
     deletion_queue = [row[0] for row in dataset]
     clear_files(deletion_queue)
     # handles removal of records from database
-    sqlarg = 'DELETE FROM session WHERE '
+    sqlarg = 'DELETE FROM sessions WHERE '
     for i in range(len(dataset)):
         if i == (len(dataset) - 1):
             sqlarg += 'uid = {}'.format(dataset[i][0])
@@ -52,7 +54,7 @@ def piso():
             session['uid'] = randint(100000, 999999)
             # check if such session ID exists
             c, conn = connection()
-            c.execute("SELECT * FROM session WHERE uid = {}".format(session['uid']))
+            c.execute("SELECT * FROM sessions WHERE uid = {}".format(session['uid']))
             dataset = [row for row in c]
             #garbage collection and closing connnection
             c.close()
@@ -109,7 +111,7 @@ def download():
         uid = session[uid]
     #determine if uid exists
     c, conn = connection()
-    c.execute("SELECT uid FROM session WHERE uid = {}".format(uid))
+    c.execute("SELECT uid FROM sessions WHERE uid = {}".format(uid))
     dataset = [row for row in c]
     c.close()
     conn.close() 

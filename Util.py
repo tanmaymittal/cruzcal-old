@@ -3,7 +3,7 @@ import datetime
 
 
 
-def clear_files(self, uid_to_be_deleted):
+def clear_files(uid_to_be_deleted):
     logging.basicConfig(filename="{}.log".format(datetime.datetime.now()), level=logging.INFO)
     for uid in uid_to_be_deleted:
         if os.path.exists('{}/{}.ics'.format(Path.cwd(), uid)):

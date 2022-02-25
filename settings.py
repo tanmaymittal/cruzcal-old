@@ -3,7 +3,7 @@ Helper function that connects to MySQLdb
 """
 import pymysql as MySQLdb
 
-database_host = 'sql3.freemysqlhosting.net '
+database_host = 'sql3.freemysqlhosting.net'
 database_user = 'sql3475197'
 database_password = '1pge27alQw'
 database_name = 'sql3475197'
