@@ -10,11 +10,8 @@ from Util import *
 
 app = Flask(__name__) 
 
-def main():
-    global last_gc
-    last_gc = datetime.datetime.main
-    global ical
-    ical = iCalendar()
+last_gc = datetime.datetime.min
+ical = iCalendar()
 
 def garbageCollection():
     # run garbage collection
@@ -40,6 +37,8 @@ def garbageCollection():
 
 @app.route('/', methods =["GET", "POST"])
 def piso():
+    global ical
+    global last_gc
     count = 0
     cal = False
     if request.method == "POST":
@@ -121,7 +120,3 @@ def download():
 @app.route("/downloadfile/calendar.ics", methods = ['GET'])
 def download_file(filename):
     return render_template('download.html',value=filename)
-
-if __name__ == "__main__":
-    app.debug = True
-    app.run()
