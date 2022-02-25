@@ -18,7 +18,7 @@ ical = iCalendar()
 def garbageCollection():
     # run garbage collection
     c, conn = connection()
-    c.execute("SELECT uid FROM sessions WHERE ftime < NOW() - INTERVAL 30 DAY")
+    c.execute("SELECT uid FROM sessions WHERE ftime < TIMESTAMP(DATE_SUB(NOW(), INTERVAL 30 day))")
     dataset = [row for row in c]
     c.close()
     conn.close() 
