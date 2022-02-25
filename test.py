@@ -1,14 +1,14 @@
 from Calendar import iCalendar
 from pathlib import Path
+from random import randint
 
 ical = iCalendar()
+uid = randint(100000, 999999)
+ical.clear(uid)
 while True:
     a = input("Please enter course number to continue, e to export, or q to quit [q]\t")
     if a == 'e':
-        file_path = input("Please enter export path for 'calendar.ICS', or q to exit [~/]\t")
-        if (''.join(file_path.split()) == '') :
-            file_path = str(Path.home() / "Downloads")
-        ical.export(file_path)
+        ical.export()
     elif (''.join(a.split()) == '') or (a == 'q'):
         exit()
     else:
