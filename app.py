@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, session
+from flask import Flask, request, render_template, send_file, session, redirect, url_for
 from addClass import pisa
 from Calendar import iCalendar
 import time
@@ -9,6 +9,7 @@ import datetime
 from Util import *
 
 app = Flask(__name__) 
+app.secret_key = 'asdasdasdasd'
 # app.debug = True
 app.config['DEBUG'] = True
 
@@ -26,6 +27,7 @@ def garbageCollection():
     clear_files(deletion_queue)
     # handles removal of records from database
     sqlarg = 'DELETE FROM sessions WHERE '
+    if len(deletion_queue) == 0: return True
     for i in range(len(dataset)):
         if i == (len(dataset) - 1):
             sqlarg += 'uid = {}'.format(dataset[i][0])
@@ -96,7 +98,7 @@ def piso():
                 class_carry.append(class_dict)
                 pass
         ical.export()
-        return render_template('index.html', class_carry = class_carry,  gotData=gotData)
+        return render_template('index.html', class_carry = class_carry,  gotData=gotData, uid = session['uid'])
     else:
         return render_template('index.html')
 
@@ -108,7 +110,7 @@ def download():
     if ('uid' not in session) and (uid == None):
         return redirect(url_for('piso'))
     elif uid == None:
-        uid = session[uid]
+        uid = session['uid']
     #determine if uid exists
     c, conn = connection()
     c.execute("SELECT uid FROM sessions WHERE uid = {}".format(uid))
@@ -117,8 +119,4 @@ def download():
     conn.close() 
     if len(dataset) == 0: return redirect(url_for('piso'))
     time.sleep(2)
-    return send_file('{}.ics'.format(uid), as_attachment=True)
-
-@app.route("/downloadfile/calendar.ics", methods = ['GET'])
-def download_file(filename):
-    return render_template('download.html',value=filename)
+    return send_file('{}/user_requests/{}.ics'.format(Path.cwd(), self.uid), as_attachment=True)

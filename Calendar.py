@@ -3,6 +3,7 @@ from Event import Event
 from pathlib import Path
 import gc
 import os
+from settings import *
 
 
 class iCalendar():
@@ -45,7 +46,15 @@ class iCalendar():
             # package the events
             if event != 0:
                 cal.add_component(event)
-        f = open('{}/{}.ics'.format(Path.cwd(), self.uid), 'wb')
+        f = open('{}/user_requests/{}.ics'.format(Path.cwd(), self.uid), 'wb')
         f.write(cal.to_ical())
         f.close()
+        c, conn = connection()
+        c.execute(
+            "INSERT INTO sessions (uid) VALUES (%s)",
+            [self.uid])
+        conn.commit()
+        c.close()
+        conn.close()
+        gc.collect()
         return True
