@@ -8,9 +8,13 @@ import gc
 import datetime
 from Util import *
 
-ical = iCalendar()
 app = Flask(__name__) 
-last_gc = datetime.datetime.min
+
+def main():
+    global last_gc
+    last_gc = datetime.datetime.main
+    global ical
+    ical = iCalendar()
 
 def garbageCollection():
     # run garbage collection
@@ -117,3 +121,7 @@ def download():
 @app.route("/downloadfile/calendar.ics", methods = ['GET'])
 def download_file(filename):
     return render_template('download.html',value=filename)
+
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
