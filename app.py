@@ -7,8 +7,15 @@ from random import randint
 import gc
 import datetime
 from Util import *
+import os
+import sys
+import logging
 
 app = Flask(__name__) 
+if 'DYNO' in os.environ:
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    app.logger.setLevel(logging.ERROR)
+
 app.secret_key = 'asdasdasdasd'
 # app.debug = True
 app.config['DEBUG'] = True
