@@ -10,6 +10,7 @@ from Util import *
 import os
 import sys
 import logging
+import pathlib
 
 app = Flask(__name__) 
 if 'DYNO' in os.environ:
@@ -126,4 +127,4 @@ def download():
     conn.close() 
     if len(dataset) == 0: return redirect(url_for('piso'))
     time.sleep(2)
-    return send_file('{}/user_requests/{}.ics'.format(Path.cwd(), self.uid), as_attachment=True)
+    return send_file('{}/user_requests/{}.ics'.format(pathlib.Path.cwd(), uid), as_attachment=True)
