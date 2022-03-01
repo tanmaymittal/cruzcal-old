@@ -25,7 +25,7 @@ class iCalendar():
         ev = Event(courseNumber)
         if ev.getClassData():
             ev.generateEvent()
-            self.events.append(ev)
+            self.events += ev.getEvents()
             self.count += 1
             return True
         return False
@@ -50,7 +50,7 @@ class iCalendar():
         for event in self.events:
             # package the events
             if event != 0:
-                cal.add_component(event.getEvents())
+                cal.add_component(event)
         f = open('{}/user_requests/{}.ics'.format(Path.cwd(), self.uid), 'wb')
         f.write(cal.to_ical())
         f.close()
