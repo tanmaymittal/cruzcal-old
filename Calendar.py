@@ -16,15 +16,19 @@ class iCalendar():
         """
         self.events = []
         self.uid = uid
+        self.count = 0
 
     def addCourse(self, courseNumber):
         """
         Add class to calendar.
         """
         ev = Event(courseNumber)
-        ev.generateEvent()
-        self.events += ev.getEvents()
-        return True
+        if ev.getClassData():
+            ev.generateEvent()
+            self.events += ev
+            self.count += 1
+            return True
+        return False
 
     def clear(self, uid):
         """
@@ -32,6 +36,7 @@ class iCalendar():
         """
         self.events = []
         self.uid = uid
+        self.count = 0
         gc.collect()
         return True
 
@@ -45,7 +50,7 @@ class iCalendar():
         for event in self.events:
             # package the events
             if event != 0:
-                cal.add_component(event)
+                cal.add_component(event.getEvents())
         f = open('{}/user_requests/{}.ics'.format(Path.cwd(), self.uid), 'wb')
         f.write(cal.to_ical())
         f.close()

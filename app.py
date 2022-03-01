@@ -76,40 +76,18 @@ def piso():
         class_number_three = request.form['class_number_three']
         class_number_four = request.form['class_number_four']
         class_number_five = request.form['class_number_four']
-        className, meetingPlace, startDate, startTime, endTime, meetingDays, count, class_number = pisa(class_number)
-        c1 = pisa(class_number)
-        c2 = pisa(class_number_two)
-        c3 = pisa(class_number_three)
-        c4 = pisa(class_number_four)
-        c5 = pisa(class_number_five)
-
-        class_dict = {
-            'className' : [], 
-            'startDate' : []
-        }
-        class_carry = []
-        gotData = False
-        
-        class_list = [c1, c2, c3, c4, c5]
-        for x in class_list:
-            if x is not None:
-                if ical.addCourse(x[-1]):
-                    cal = True
-                for num, i in enumerate(x):
-                    if num == 0:
-                        class_dict['className'] = i
-                        print("hi",i)
-                    elif num == 2:
-                        class_dict['startDate'] = i
-                    elif num == 5:
-                        class_dict['meetingDays'] = i
-                gotData = True
-                class_carry.append(class_dict)
-                pass
-        ical.export()
-        # return render_template('indexv2.html', class_carry = class_carry,  gotData=gotData, uid = session['uid'])
-        return redirect(url_for('download'))
+        for x in [class_number, class_number_two, class_number_three, class_number_four, class_number_five]:
+            if x.isnumeric():
+                course_num = int(x)
+                ical.addCourse(course_num):
+        if ical.count > 0:
+            ical.export()
+            return redirect(url_for('download'))
+        else:
+            #Add return template with error = error
+            return render_template('indexv2.html')
     else:
+        error = None
         return render_template('indexv2.html')
 
     

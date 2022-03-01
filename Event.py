@@ -85,7 +85,6 @@ class Event():
             'rec_dur': '25' # dont know 
         }
         self.events = []
-        self.getClassData()
 
     def getClassData(self):
         """
@@ -103,8 +102,6 @@ class Event():
             children = child.findAll("tr" , recursive=False)
             if len(children) == 2: 
                 tableRow = children[1].find_all("td")
-                print(tableRow)
-                #tableRow structure: 4x4
                 meetingTimes = tableRow[0]
                 meetingPlace = tableRow[1]
                 instructor = tableRow[2]
@@ -125,7 +122,6 @@ class Event():
                 self.startDate = in_date_formatted
                 self.meetingTime = (startTime, endTime)
                 self.meetingDates = self.days[daysToMeet]
-                print(self.meetingDates)
                 return True
         return False
     def getEvents(self):
