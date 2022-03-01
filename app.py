@@ -53,6 +53,7 @@ def piso():
     global last_gc
     count = 0
     cal = False
+    error = request.args.get('error')
     if request.method == "POST":
         # 1 Garbage collection per 24 hours
         curr_time = datetime.datetime.now()
@@ -84,12 +85,10 @@ def piso():
             ical.export()
             return redirect(url_for('download'))
         else:
-            #Add return template with error = error
-            print("Error here")
-            return render_template('indexv2.html')
+            return render_template('indexv2.html', error = "Error: Input includes invalid course numbers.")
     else:
         error = None
-        return render_template('indexv2.html')
+        return render_template('indexv2.html', error = error)
 
     
 @app.route('/download')
