@@ -98,6 +98,7 @@ def piso():
                 for num, i in enumerate(x):
                     if num == 0:
                         class_dict['className'] = i
+                        print("hi",i)
                     elif num == 2:
                         class_dict['startDate'] = i
                     elif num == 5:
@@ -106,9 +107,10 @@ def piso():
                 class_carry.append(class_dict)
                 pass
         ical.export()
-        return render_template('index.html', class_carry = class_carry,  gotData=gotData, uid = session['uid'])
+        # return render_template('indexv2.html', class_carry = class_carry,  gotData=gotData, uid = session['uid'])
+        return redirect(url_for('download'))
     else:
-        return render_template('index.html')
+        return render_template('indexv2.html')
 
     
 @app.route('/download')
