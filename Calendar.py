@@ -25,7 +25,7 @@ class iCalendar():
         ev = Event(courseNumber)
         if ev.getClassData():
             ev.generateEvent()
-            self.events += ev
+            self.events.append(ev)
             self.count += 1
             return True
         return False
