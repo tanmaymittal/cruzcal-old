@@ -79,12 +79,13 @@ def piso():
         for x in [class_number, class_number_two, class_number_three, class_number_four, class_number_five]:
             if x.isnumeric():
                 course_num = int(x)
-                ical.addCourse(course_num):
+                ical.addCourse(course_num)
         if ical.count > 0:
             ical.export()
             return redirect(url_for('download'))
         else:
             #Add return template with error = error
+            print("Error here")
             return render_template('indexv2.html')
     else:
         error = None
